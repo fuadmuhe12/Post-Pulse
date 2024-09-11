@@ -1,8 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import Logo from '../../public/logo.svg'
-import DashboardItems from './dashboard/DashboardItems'
+import Logo from '../../../public/logo.svg'
+import DashboardItems from './DashboardItems'
 
 type Props = {}
 

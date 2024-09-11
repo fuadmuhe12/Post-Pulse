@@ -1,33 +1,12 @@
-import Header from '@/components/Header';
-import SideBar from '@/components/Sidebar'
-import { DollarSign, Globe, Home, LucideProps } from 'lucide-react';
-import React, { ForwardRefExoticComponent, ReactNode, RefAttributes } from 'react'
+import Header from '@/components/dashboard/Header';
+import SideBar from '@/components/dashboard/Sidebar';
+import React, { ReactNode } from 'react'
 
 type Props = {
     children: ReactNode
 }
-type NavItem = {
-    name: string
-    href: string
-    icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>
-}
-export const navLinks: NavItem[] = [
-    {
-        name: "Dashboard",
-        href: "/dashboard",
-        icon: Home,
-    },
-    {
-        name: "Sites",
-        href: "/dashboard/sites",
-        icon: Globe,
-    },
-    {
-        name: "Pricing",
-        href: "/dashboard/pricing",
-        icon: DollarSign,
-    },
-];
+
+
 export default function DashBoardLayout({ children }: Props) {
     return (
         <div>
