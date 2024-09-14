@@ -7,15 +7,17 @@ import { allowedNodeEnvironmentFlags } from "process";
 import prisma from "./db";
 import { record } from "zod";
 import { use } from "react";
-
-export async function CreateSiteAction(prevState: any, fromData: FormData) {
+export async function GetUser() {
     const { getUser } = getKindeServerSession();
     const user = await getUser();
     if (!user) {
         redirect('/api/auth/login')
     }
+    return user
+}
+export async function CreateSiteAction(prevState: any, fromData: FormData) {
+    const user = await GetUser();
     const submission = parseWithZod(fromData, { schema: siteSchema, })
-
     if (submission.status !== "success") {
         return submission.reply()
     }
@@ -42,12 +44,8 @@ export async function CreateSiteAction(prevState: any, fromData: FormData) {
 }
 
 export async function GetSiteData() {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
-    if (!user) {
-        redirect('/api/auth/login')
-    }
 
+    const user = await GetUser();
     const siteData = await prisma.site.findMany({
         where: {
             userId: user.id,
@@ -59,4 +57,18 @@ export async function GetSiteData() {
     })
 
     return siteData
+}
+
+export async function GetPostData(siteId: string) {
+    const user = await GetUser();
+    const PostData = await prisma.post.findMany({
+        where: {
+            userId: user.id,
+            siteId: siteId
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    })
+    return PostData;
 }
