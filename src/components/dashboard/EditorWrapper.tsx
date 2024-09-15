@@ -27,6 +27,7 @@ const TailwindEditor = ({ onUpdate, initialContent }: EditorProps) => {
                     const json = editor.getJSON();
                     onUpdate(json);
                 }}
+                immediatelyRender={false}
                 editorProps={{
                     handleDOMEvents: {
                         keydown: (_view, event) => handleCommandNavigation(event),

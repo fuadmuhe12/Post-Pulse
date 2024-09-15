@@ -3,20 +3,17 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-    console.log('Get request started')
     const { getUser } = getKindeServerSession();
     const user = await getUser();
-    console.log('checking user existance')
     if (!user || user.id === null || user === null) {
-        throw new Error('something went wrong. user does not exist')
+        return NextResponse.redirect(process.env.KINDE_SITE_URL!)
+        /* TODO: removed the throw */
     }
-    console.log('checking user in db')
     const dbUser = await prisma.user.findUnique({
         where: {
             id: user.id
         }
     });
-    console.log('checking user in db done')
     if (!dbUser) {
         await prisma.user.create({
             data: {
@@ -27,13 +24,10 @@ export async function GET() {
                 profileImage: user.picture ?? `https://avatar.vercel.sh/${user.given_name}`
             }
         });
-        console.log('user created')
 
     }
     else {
-        console.log('user already exist')
     }
-    console.log('redirecting to dashboard')
 
 
 

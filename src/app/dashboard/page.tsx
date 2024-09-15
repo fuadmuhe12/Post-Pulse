@@ -7,7 +7,6 @@ type Props = {}
 export default async function DashBoard({ }: Props) {
     const { getUser } = await getKindeServerSession();
     const user = await getUser();
-    console.log(user);
 
     return (
         <div>DashBoard</div>

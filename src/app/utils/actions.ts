@@ -2,11 +2,8 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
 import { parseWithZod } from "@conform-to/zod";
-import { siteSchema } from "./zodSchemas";
-import { allowedNodeEnvironmentFlags } from "process";
+import { postSchema, siteSchema } from "./zodSchemas";
 import prisma from "./db";
-import { record } from "zod";
-import { use } from "react";
 export async function GetUser() {
     const { getUser } = getKindeServerSession();
     const user = await getUser();
@@ -71,4 +68,55 @@ export async function GetPostData(siteId: string) {
         }
     })
     return PostData;
+}
+
+export async function CreatePostActions(prevState: any, formData: FormData) {
+    const user = await GetUser();
+    const submission = parseWithZod(formData, { schema: postSchema })
+    if (submission.status !== 'success') {
+        return submission.reply()
+    }
+
+    const validatedData = submission.value;
+    let siteId;
+    try {
+        siteId = formData.get('siteId') as string
+    } catch (error) {
+        return submission.reply({
+            formErrors: ['Site is not found']
+        })
+    }
+    try {
+        const responce = await prisma.post.create({
+            data: {
+                image: validatedData.coverImage,
+                postContent: JSON.parse(validatedData.postContent),
+                slug: validatedData.slug,
+                smallDescription: validatedData.smallDescription,
+                title: validatedData.title,
+                siteId: siteId,
+                userId: user.id,
+            }
+        });
+
+
+
+
+    } catch (error) {
+        return submission.reply({
+            formErrors: ['failed to create Article', `${error}`]
+        })
+
+    }
+    return redirect(`/dashboard/sites/${siteId}`)
+}
+
+export async function IsSlugExist(slug: string) {
+    await GetUser()
+    const post = await prisma.post.findFirst({
+        where: {
+            slug: slug
+        }
+    })
+    return post ? true : false
 }
