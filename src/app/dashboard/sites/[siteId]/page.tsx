@@ -51,6 +51,7 @@ import prisma from "@/app/utils/db";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import SubmitButton from "@/components/dashboard/SubmitButton";
 import { Input } from "@/components/ui/input";
+import EmptyStateCard from "@/components/dashboard/EmptyStateCard";
 
 type Props = {
     params: {
@@ -105,23 +106,12 @@ export default function DynamicSite({ params }: Props) {
                 </div>
             )}
             {(postData.length === 0 || postData === undefined) && !isfetching ? (
-                <div className="flex justify-center flex-1 items-center bg-muted/20 border border-dashed flex-col border-border p-8 pt-0 animate-in fade-in-50 text-center">
-                    <div className="size-20 flex justify-center items-center bg-primary/10 rounded-full">
-                        <FileIcon className="size-10 text-primary" />
-                    </div>
-                    <h2 className="mt-6 font-semibold text-xl">
-                        You don&apos;t have any Sites created
-                    </h2>
-                    <p className="mt-2 mb-8 text-muted-foreground max-w-sm mx-auto leading-tight">
-                        You currently dont have any Sites. Please create some so that you
-                        can see them right here!
-                    </p>
-                    <Button asChild>
-                        <Link href={"sites/newsite"} className="flex">
-                            <PlusCircle className="mr-2" /> Create Site
-                        </Link>
-                    </Button>
-                </div>
+                <EmptyStateCard
+                    buttonHref={`${params.siteId}/createArticle`}
+                    buttonText="Create Article"
+                    description="You currently dont have any Articles. Please create some so that you can see them right here!"
+                    tittle="You don't have any Articles created"
+                />
             ) : (
                 <div>
                     <Card className="border-border">

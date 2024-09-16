@@ -11,6 +11,7 @@ import { useForm } from '@conform-to/react'
 import { parseWithZod } from '@conform-to/zod'
 import { siteSchema } from '@/app/utils/zodSchemas'
 import { cn } from '@/lib/utils'
+import SubmitButton from '@/components/dashboard/SubmitButton'
 type Props = {}
 
 export default function NewSitePage({ }: Props) {
@@ -65,7 +66,7 @@ export default function NewSitePage({ }: Props) {
                         <p className='text-red-500 text-sm'>{form.errors}</p>
                     </CardContent>
                     <CardFooter>
-                        <Button type='submit'>Submit</Button>
+                        <SubmitButton name='Create Site' />
                     </CardFooter>
                 </form>
             </Card>

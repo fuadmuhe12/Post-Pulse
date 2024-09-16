@@ -2,7 +2,7 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { notFound, redirect } from "next/navigation";
 import { parseWithZod } from "@conform-to/zod";
-import { postSchema, siteImageUploadSchema, siteSchema } from "./zodSchemas";
+import { postSchema, siteCreationSchema, siteImageUploadSchema, siteSchema } from "./zodSchemas";
 import prisma from "./db";
 import { Podcast } from "lucide-react";
 import { title } from "process";
@@ -17,11 +17,26 @@ export async function GetUser() {
 }
 export async function CreateSiteAction(prevState: any, fromData: FormData) {
     const user = await GetUser();
-    const submission = parseWithZod(fromData, { schema: siteSchema, })
+    const submission = await parseWithZod(fromData, {
+        async: true,
+        schema: await siteCreationSchema({
+            IssubdirectoryUnique: async () => {
+                const site = await prisma.site.findUnique({
+                    where: {
+                        subdirectory: fromData.get('subdirectory') as string
+                    }
+                });
+                return site ? false : true
+            }
+        }),
+    })
     if (submission.status !== "success") {
+        console.log('error from site creation_______________')
         return submission.reply()
     }
     const validatedData = submission.value;
+
+    console.log('data has been validated back end________________')
     try {
         const responce = await prisma.site.create({
             data: {
@@ -140,9 +155,9 @@ export async function IsSlugExist(slug: string, id?: string) {
     const post = await prisma.post.findFirst({
         where: {
             slug: slug,
-            id: id ? { not: id } : undefined
         }
     })
+
     return post ? true : false
 }
 
@@ -307,4 +322,34 @@ export async function DeleteSiteAction(formData: FormData) {
         return notFound();
     }
     return redirect('/dashboard/sites')
+}
+
+
+export async function GetSiteAndPostData() {
+    const user = await GetUser();
+    try {
+        const [siteData, PostData] = await Promise.all([
+            prisma.site.findMany({
+                where: {
+                    userId: user.id
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                take: 3
+            }),
+            prisma.post.findMany({
+                where: {
+                    userId: user.id
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                take: 3
+            })
+        ]);
+        return { siteData, PostData }
+    } catch (error) {
+        return { siteData: [], PostData: [] }
+    }
 }

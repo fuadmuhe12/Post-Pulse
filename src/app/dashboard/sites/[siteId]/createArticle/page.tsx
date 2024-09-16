@@ -35,7 +35,7 @@ export default function CreateAriticlePage({ params }: Props) {
     const [imageUrl, setImageUrl] = useState<string | undefined>('');
     const [slugExist, setSlugExist] = useState<boolean>(false);
     const [ArticleContent, setArticleContent] = useState<JSONContent | undefined>(undefined);
-    const [slugGenerated, setSlugGenerated] = useState<string | undefined>('defalt-slug');
+    const [slugGenerated, setSlugGenerated] = useState<string | undefined>('');
     const [isSlugCheckPending, startSlugChecking] = useTransition();
     const [lastState, actions] = useFormState(CreatePostActions, undefined);
     const [form, fields] = useForm({
