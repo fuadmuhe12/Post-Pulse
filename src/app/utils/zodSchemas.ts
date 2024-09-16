@@ -13,3 +13,8 @@ export const postSchema = z.object({
     postContent: z.string().min(1),
     coverImage: z.string().min(1)
 })
+
+export const siteImageUploadSchema = z.object({
+    imageUrl: z.string().min(1)
+})
+

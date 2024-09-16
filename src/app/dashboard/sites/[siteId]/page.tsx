@@ -89,7 +89,7 @@ export default function DynamicSite({ params }: Props) {
                     </Link>
                 </Button>
                 <Button asChild variant={"secondary"}>
-                    <Link href={"#"}>
+                    <Link href={`${params.siteId}/settings`}>
                         <Settings />
                     </Link>
                 </Button>
