@@ -35,9 +35,9 @@ export default function CreateAriticlePage({ params }: Props) {
     const [imageUrl, setImageUrl] = useState<string | undefined>('');
     const [slugExist, setSlugExist] = useState<boolean>(false);
     const [ArticleContent, setArticleContent] = useState<JSONContent | undefined>(undefined);
-    const [slugGenerated, setSlugGenerated] = useState<string | undefined>('');
-    const [lastState, actions] = useFormState(CreatePostActions, undefined);
+    const [slugGenerated, setSlugGenerated] = useState<string | undefined>('defalt-slug');
     const [isSlugCheckPending, startSlugChecking] = useTransition();
+    const [lastState, actions] = useFormState(CreatePostActions, undefined);
     const [form, fields] = useForm({
         lastResult: lastState,
         onValidate({ formData }) {
@@ -68,6 +68,8 @@ export default function CreateAriticlePage({ params }: Props) {
         }
         )
     };
+
+
 
 
     return (
